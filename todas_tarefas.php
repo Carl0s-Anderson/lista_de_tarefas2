@@ -14,7 +14,7 @@ require_once 'tarefa_controller.php';
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	<script>
-		function editar(id,txt_tarefa) {
+		function editar(id, txt_tarefa) {
 			let form = document.createElement('form');
 			form.action = 'tarefa_controller.php?acao=atualizar';
 			form.method = 'post';
@@ -60,6 +60,10 @@ require_once 'tarefa_controller.php';
 		function mudarStatus(id) {
 			location.href = 'tarefa_controller.php?acao=mudarStatus&id=' + id;
 		}
+
+		function excluir(id) {
+			location.href = 'tarefa_controller.php?acao=excluir&id=' + id;
+		}
 	</script>
 </head>
 
@@ -95,14 +99,13 @@ require_once 'tarefa_controller.php';
 										<?= $tarefa->tarefa ?> (<?= $tarefa->status ?>)
 									</div>
 									<div class="col-sm-3 mt-2 d-flex justify-content-between">
-										<i class="fas fa-trash-alt fa-lg text-danger"></i>
+										<i class="fas fa-trash-alt fa-lg text-danger" onclick="excluir(<?= $tarefa->id ?>)"></i>
 										<i class="fas fa-edit fa-lg text-info" onclick="editar(<?= $tarefa->id ?>, '<?= $tarefa->tarefa ?>')"></i>
-										<?php if ($tarefa->status == 'pendente') { ?>
-											<i id="<?= $tarefa->id ?>" class="fas fa-check-square fa-lg text-success" onclick="mudarStatus(<?= $tarefa->id ?>, '<?= $tarefa->tarefa ?>')"></i>
-										<?php } else { ?>
-											<i class="fas fa-check-square fa-lg text-secondary"></i>
-										<?php } ?>
-
+										<?php if ($tarefa->status == 'pendente'): ?>
+											<i class="fas fa-check-square fa-lg text-success" title="Marcar como realizada" onclick="mudarStatus(<?= $tarefa->id ?>)"></i>
+										<?php else: ?>
+											<i class="fas fa-check-square fa-lg text-secondary" title="Tarefa concluída"></i>
+										<?php endif; ?>
 
 									</div>
 								</div>
