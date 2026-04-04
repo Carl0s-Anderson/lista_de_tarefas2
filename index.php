@@ -1,5 +1,5 @@
 <?php
-$acao = 'recuperar';
+$acao = 'recuperarTarefasPendentes';
 require_once 'tarefa_controller.php';
 ?>
 <html>
@@ -42,7 +42,7 @@ require_once 'tarefa_controller.php';
 			form.appendChild(inputId);
 
 			//incluir button no form
-			form.appendChild(button);
+			tarefa.appendChild(form);
 
 			let tarefa = document.getElementById('tarefa-' + id);
 
@@ -55,9 +55,27 @@ require_once 'tarefa_controller.php';
 			alert(txt_tarefa);
 		}
 
-		function mudarStatus(id) {
-			location.href = 'index.php?pag=index&mudarStatus&id=' + id;
-		}
+		function mudarStatus(id, elementoIcone) {
+    // 1. O 'ajax=true' avisa o PHP que não queremos recarregar a página
+    fetch('tarefa_controller.php?acao=mudarStatus&id=' + id + '&ajax=true')
+    .then(resposta => {
+        if(resposta.ok) {
+            // 2. Se o banco salvou com sucesso, atualizamos o visual na mesma hora!
+            
+            // Troca o ícone para cinza
+            elementoIcone.className = 'fas fa-check-square fa-lg text-secondary';
+            elementoIcone.onclick = null; // Remove o evento de clique para não clicar duas vezes
+            elementoIcone.title = 'Tarefa concluída';
+
+            // Pega a Div do texto da tarefa e adiciona um efeito de "riscado"
+            let divTarefa = document.getElementById('tarefa-' + id);
+            divTarefa.style.textDecoration = 'line-through';
+            divTarefa.style.color = '#888'; 
+        } else {
+            alert('Erro ao atualizar o status da tarefa.');
+        }
+    });
+}
 
 		function excluir(id) {
 			location.href = 'index.php?pag=index&acao=excluir&id=' + id;
@@ -103,7 +121,7 @@ require_once 'tarefa_controller.php';
 									<div class="col-sm-3 mt-2 d-flex justify-content-between">
 										<i class="fas fa-trash-alt fa-lg text-danger" onclick="excluir(<?= $tarefa->id ?>)"></i>
 										<i class="fas fa-edit fa-lg text-info" onclick="editar(<?= $tarefa->id ?>, '<?= $tarefa->tarefa ?>')"></i>
-										<i class="fas fa-check-square fa-lg text-success" title="Marcar como realizada" onclick="mudarStatus(<?= $tarefa->id ?>)"></i>
+										<i class="fas fa-check-square fa-lg text-success" title="Marcar como realizada" onclick="mudarStatus(<?= $tarefa->id ?>, this)"></i>
 									</div>
 								</div>
 							<?php } ?>
